@@ -12,7 +12,8 @@ COPY --from=build /tmp/KeyDB/src/keydb-server /tmp/KeyDB/src/keydb-cli /usr/loca
 RUN apk add libcurl libuuid libgcc libunwind libstdc++ bash
 RUN ldd /usr/local/bin/keydb-server /usr/local/bin/keydb-cli
 RUN ln -s /usr/local/bin/keydb-cli /usr/local/bin/redis-cli
+ADD entrypoint.sh liveness.sh readiness.sh /
 VOLUME /data
 WORKDIR /data
 EXPOSE 6379
-CMD ["keydb-server", "/etc/keydb/keydb.conf"]
+ENTRYPOINT ["/entrypoint.sh"]
