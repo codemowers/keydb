@@ -1,13 +1,14 @@
 FROM alpine AS build
-RUN apk add bash build-base coreutils curl-dev git libunwind-dev linux-headers musl-dev openssl-dev perl util-linux-dev
+RUN apk add bash build-base coreutils curl-dev git libunwind-dev linux-headers musl-dev openssl-dev perl util-linux-dev snappy-dev bzip2-dev zstd-dev lz4-dev
 WORKDIR /tmp
-RUN git clone --branch v6.3.1 https://github.com/Snapchat/KeyDB.git --recursive;
+RUN git clone --branch v6.3.2 https://github.com/Snapchat/KeyDB.git --recursive;
 WORKDIR /tmp/KeyDB
 RUN make -j$(nproc) BUILD_TLS=yes;
 WORKDIR /tmp/KeyDB/src
 RUN strip keydb-server keydb-cli
 
 FROM alpine
+RUN apk add snappy libbz2 zstd-libs lz4-libs
 COPY --from=build /tmp/KeyDB/src/keydb-server /tmp/KeyDB/src/keydb-cli /usr/local/bin/
 RUN apk add libcurl libuuid libgcc libunwind libstdc++ bash
 RUN ldd /usr/local/bin/keydb-server /usr/local/bin/keydb-cli
