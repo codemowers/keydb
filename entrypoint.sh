@@ -10,5 +10,5 @@ done
 exec keydb-server /etc/redis/redis.conf \
     --bind "0.0.0.0" \
     --port 6379 \
-    "${replicas[@]}" \
-    $@
+    $@ \
+    "${replicas[@]}"
